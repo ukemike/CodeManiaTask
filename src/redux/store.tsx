@@ -19,23 +19,15 @@ import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 // services
-import { authApi } from "./services/auth.service";
 import { productApi } from "./services/product.service";
-
-// reducers
-import authReducer from "./slices/authSlice";
-import uiReducer from "./slices/uiSlice";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "ui"],
+  whitelist: [],
 };
 
 const rootReducer = combineReducers({
-  auth: authReducer,
-  ui: uiReducer,
-  [authApi.reducerPath]: authApi.reducer,
   [productApi.reducerPath]: productApi.reducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -43,7 +35,6 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store: any = configureStore({
   reducer: {
     app: persistedReducer,
-    [authApi.reducerPath]: authApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -52,7 +43,6 @@ export const store: any = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat([
-      authApi.middleware,
       productApi.middleware,
     ]),
 });
