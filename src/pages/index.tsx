@@ -13,7 +13,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { MdOutlineFilterAltOff } from "react-icons/md";
 
 const Home = () => {
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(10);
   const [skip, setSkip] = useState(0);
   const [category, setCategory] = useState("");
   const [allProducts, setAllProducts] = useState([]);
@@ -32,11 +32,18 @@ const Home = () => {
     isLoading: isLoadingProductsByCategory,
     refetch: refetchProductsByCategory,
     isFetching: isFetchingProductsByCategory,
-  } = useGetProductsByCategoryQuery({
-    category: category,
-    limit: limit,
-    skip: skip,
-  });
+  } = useGetProductsByCategoryQuery(
+    {
+      category,
+      params: {
+        limit: limit,
+        skip: skip,
+      },
+    },
+    {
+      skip: !category,
+    }
+  );
 
   const productsByCategoryData = useMemo(
     () => productsByCategory?.products,
@@ -89,11 +96,11 @@ const Home = () => {
                   ))
                 : categories?.map((category: any) => (
                     <option
-                      key={category}
-                      value={category}
+                      key={category?.slug}
+                      value={category?.slug}
                       style={{ textTransform: "capitalize" }}
                     >
-                      {category}
+                      {category?.slug}
                     </option>
                   ))}
             </Select>
@@ -120,6 +127,7 @@ const Home = () => {
 
         <Pagination
           limit={limit}
+          setLimit={setLimit}
           skip={skip}
           total={category ? productsByCategory?.total : data?.total}
           setSkip={setSkip}

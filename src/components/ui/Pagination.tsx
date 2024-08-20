@@ -7,6 +7,7 @@ type PaginationProps = {
   skip: number;
   total: number;
   setSkip: any;
+  setLimit: (limit: number) => void;
 };
 
 export const Pagination = ({
@@ -14,10 +15,8 @@ export const Pagination = ({
   skip,
   total,
   setSkip,
+  setLimit,
 }: PaginationProps) => {
-  // calculate total pages
-  const totalPages = useMemo(() => Math.ceil(total / limit), [total, limit]);
-
   // handle page change when user clicks on next or previous button
   const handlePageChange = (type: string) => {
     if (type === "next") {
@@ -27,20 +26,10 @@ export const Pagination = ({
     }
   };
 
-  // handle page change when user selects a page number from the dropdown
-
-  const handleSelectChange = (e: any) => {
-    setSkip((parseInt(e.target.value) - 1) * limit);
+  // hanldle limit change when user selects a different limit
+  const handleLimitChange = (e: any) => {
+    setLimit(parseInt(e.target.value));
   };
-
-  // generate page numbers
-  const pageNumbers = useMemo(() => {
-    const numbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      numbers.push(i);
-    }
-    return numbers;
-  }, [totalPages]);
 
   return (
     <HStack justifyContent="space-between" alignItems="center" mt="8">
@@ -51,17 +40,12 @@ export const Pagination = ({
           onClick={() => handlePageChange("prev")}
           isDisabled={skip === 0}
         />
-        <Select
-          onChange={handleSelectChange}
-          value={skip / limit + 1}
-          w="24"
-          size="sm"
-        >
-          {pageNumbers?.map((number) => (
-            <option key={number} value={number}>
-              {number}
-            </option>
-          ))}
+        <Select w="24" size="sm" value={limit} onChange={handleLimitChange}>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={30}>30</option>
+          <option value={40}>40</option>
+          <option value={50}>50</option>
         </Select>
         <IconButton
           aria-label="Next page"

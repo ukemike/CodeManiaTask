@@ -7,9 +7,10 @@ export const productApi = createApi({
   tagTypes: ["PRODUCT"],
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: (data) => ({
-        url: `products?limit=${data.limit}&skip=${data.skip}`,
+      query: (params) => ({
+        url: `products`,
         method: "GET",
+        params,
       }),
       providesTags: ["PRODUCT"],
     }),
@@ -23,9 +24,10 @@ export const productApi = createApi({
     }),
 
     getProductsByCategory: builder.query({
-      query: (data) => ({
-        url: `products/category/${data.category}?limit=${data.limit}&skip=${data.skip}`,
+      query: ({ category, params }) => ({
+        url: `products/category/${category}`,
         method: "GET",
+        params,
       }),
       providesTags: ["PRODUCT"],
     }),
